@@ -1,0 +1,182 @@
+{
+  "description": "pyiron",
+  "enable": true,
+  "types": {
+    "Project": {
+      "default": "",
+      "widget": "TextInput",
+      "shownInColor": "hsl(30, 50%, 60%)"
+    },
+    "Structure": {
+      "default": "",
+      "widget": "TextInput",
+      "shownInColor": "hsl(30, 50%, 60%)"
+    },
+    "Job": {
+      "default": "",
+      "widget": "TextInput",
+      "shownInColor": "hsl(30, 50%, 60%)"
+    }
+  },
+  "nodes": {
+    "Create Project": {
+      "type": "Create Project",
+      "category": "function",
+      "title": "New Project",
+      "tooltip": "create a Project object",
+      "externalImports": "from pyiron_base import Project",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = Project({{{inputs.1}}})\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "exec in",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "path": {
+          "title": "path",
+          "dataType": "string",
+          "tooltip": "the path string to create"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "exec out",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "project": {
+          "title": "Project",
+          "dataType": "pyiron.Project",
+          "tooltip": "the Project object"
+        }
+      }
+    },
+    "Create Structure": {
+      "type": "Create Structure",
+      "category": "function",
+      "title": "New ASE structure",
+      "tooltip": "create an ASE structure object",
+      "externalImports": "from ase.build import bulk",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = bulk({{{inputs.1}}}, cubic={{{inputs.2}}})\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "exec in",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "element": {
+          "title": "element",
+          "dataType": "string",
+          "tooltip": "name of the checmical element"
+        },
+        "cubic": {
+          "title": "cubic",
+          "dataType": "boolean",
+          "tooltip": "create a cubic crystal structure"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "exec out",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "structure": {
+          "title": "Structure",
+          "dataType": "pyiron.Structure",
+          "tooltip": "the Structure object"
+        }
+      }
+    },
+    "Create Job": {
+      "type": "Create Job",
+      "category": "function",
+      "title": "New job object",
+      "tooltip": "create an job object",
+      "externalImports": "from pyiron_atomistics import Project",
+      "sourceCode": "{{indent}}job = {{{inputs.1}}}.create.job.Lammps(job_name={{{inputs.2}}})\n{{indent}}job.structure = {{{inputs.3}}}\n{{indent}}job.run()\n{{indent}}{{{outputs.1}}}=job\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "exec in",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "project": {
+          "title": "Project",
+          "dataType": "pyiron.Project",
+          "tooltip": "the Project object"
+        },
+        "element": {
+          "title": "job_name",
+          "dataType": "string",
+          "tooltip": "name of the job object"
+        },
+        "structure": {
+          "title": "Structure",
+          "dataType": "pyiron.Structure",
+          "tooltip": "the Structure object"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "exec out",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "job": {
+          "title": "Job",
+          "dataType": "pyiron.Job",
+          "tooltip": "the pyiron job object"
+        }
+      }
+    },
+    "Get Energy": {
+      "type": "Get Energy",
+      "category": "function",
+      "title": "Get Energy",
+      "tooltip": "Get total energy from pyiron job object",
+      "externalImports": "from pyiron_atomistics import Project",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = {{{inputs.1}}}.output.energy_tot\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "exec in",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "job": {
+          "title": "Job",
+          "dataType": "pyiron.Job",
+          "tooltip": "the pyiron job object"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "exec out",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "energy": {
+          "title": "Energy",
+          "dataType": "numpy.ndarray",
+          "tooltip": "the total energy as numpy array"
+        }
+      }
+    }
+  }
+}
