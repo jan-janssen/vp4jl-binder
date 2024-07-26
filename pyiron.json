@@ -101,8 +101,8 @@
       "category": "function",
       "title": "New job object",
       "tooltip": "create an job object",
-      "externalImports": "from pyiron_atomistics import Project",
-      "sourceCode": "{{indent}}job = {{{inputs.1}}}.create.job.Lammps(job_name={{{inputs.2}}})\n{{indent}}job.structure = {{{inputs.3}}}\n{{indent}}job.run()\n{{indent}}{{{outputs.1}}}=job\n{{{outputs.0}}}",
+      "externalImports": "from pyiron_atomistics import Project, ase_to_pyiron",
+      "sourceCode": "{{indent}}job = {{{inputs.1}}}.create.job.Lammps(job_name={{{inputs.2}}})\n{{indent}}job.structure = ase_to_pyiron({{{inputs.3}}})\n{{indent}}job.run()\n{{indent}}{{{outputs.1}}}=job\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
