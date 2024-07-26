@@ -1,11 +1,8 @@
 channels:
 - conda-forge
 dependencies:
-- lammps =2024.02.07=*_openmpi_*
+- lammps =2024.06.27=*_openmpi_*
 - pyiron_base =0.9.7
 - pyiron_atomistics =0.6.6
-- vp4jl =0.1.5
-- kornia =0.7.3
-- pytorch =2.3.1
-- scikit-image =0.24.0 
-- torchvision =0.18.1
+- pyiron-data =0.0.30
+- vp4jl =0.1.4
