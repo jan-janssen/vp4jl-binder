@@ -69,7 +69,7 @@
           "title": "Project",
           "dataType": "string",
           "tooltip": "the Project object"
-        }
+        },
         "element": {
           "title": "element",
           "dataType": "string",
@@ -110,7 +110,7 @@
           "title": "Project",
           "dataType": "string",
           "tooltip": "the Project object"
-        }
+        },
         "structure": {
           "title": "Structure",
           "dataType": "pyiron.Structure",
