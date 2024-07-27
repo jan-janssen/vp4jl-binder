@@ -2,17 +2,17 @@
   "description": "pyiron",
   "enable": true,
   "types": {
-    "Project": {
-      "default": "",
-      "widget": "TextInput",
-      "shownInColor": "hsl(30, 50%, 60%)"
-    },
     "Structure": {
       "default": "",
       "widget": "TextInput",
       "shownInColor": "hsl(30, 50%, 60%)"
     },
-    "Job": {
+    "PotentialList": {
+      "default": "",
+      "widget": "TextInput",
+      "shownInColor": "hsl(30, 50%, 60%)"
+    },
+    "Plot": {
       "default": "",
       "widget": "TextInput",
       "shownInColor": "hsl(30, 50%, 60%)"
@@ -24,8 +24,8 @@
       "category": "function",
       "title": "New Project",
       "tooltip": "create a Project object",
-      "externalImports": "from pyiron_base import Project",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = Project({{{inputs.1}}})\n{{{outputs.0}}}",
+      "externalImports": "from pyiron_atomistics import Project",
+      "sourceCode": "{{indent}}def create_project(project_name):\n    return Project(project_name).path\n{{indent}}{{{outputs.1}}} = create_project(project_name={{{inputs.1}}})\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -50,7 +50,7 @@
         },
         "project": {
           "title": "Project",
-          "dataType": "pyiron.Project",
+          "dataType": "string",
           "tooltip": "the Project object"
         }
       }
@@ -60,49 +60,8 @@
       "category": "function",
       "title": "New ASE structure",
       "tooltip": "create an ASE structure object",
-      "externalImports": "from ase.build import bulk",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = bulk({{{inputs.1}}}, cubic={{{inputs.2}}})\n{{{outputs.0}}}",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "tooltip": "exec in",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "element": {
-          "title": "element",
-          "dataType": "string",
-          "tooltip": "name of the checmical element"
-        },
-        "cubic": {
-          "title": "cubic",
-          "dataType": "boolean",
-          "tooltip": "create a cubic crystal structure"
-        }
-      },
-      "outputs": {
-        "execOut": {
-          "title": "execOut",
-          "tooltip": "exec out",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "structure": {
-          "title": "Structure",
-          "dataType": "pyiron.Structure",
-          "tooltip": "the Structure object"
-        }
-      }
-    },
-    "Create Job": {
-      "type": "Create Job",
-      "category": "function",
-      "title": "New job object",
-      "tooltip": "create an job object",
-      "externalImports": "from pyiron_atomistics import Project, ase_to_pyiron",
-      "sourceCode": "{{indent}}job = {{{inputs.1}}}.create.job.Lammps(job_name={{{inputs.2}}})\n{{indent}}job.structure = ase_to_pyiron({{{inputs.3}}})\n{{indent}}job.run()\n{{indent}}{{{outputs.1}}}=job\n{{{outputs.0}}}",
+      "externalImports": "from ase.build import bulk\nfrom pyiron_atomistics import Project",
+      "sourceCode": "{{indent}}def create_structure(element):\n    return bulk(element, cubic=True)\n{{indent}}{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(create_structure, delayed=True, element={{{inputs.2}}})\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -113,13 +72,49 @@
         },
         "project": {
           "title": "Project",
-          "dataType": "pyiron.Project",
+          "dataType": "string",
           "tooltip": "the Project object"
         },
         "element": {
-          "title": "job_name",
+          "title": "element",
           "dataType": "string",
-          "tooltip": "name of the job object"
+          "tooltip": "name of the checmical element"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "exec out",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "structure": {
+          "title": "Structure",
+          "dataType": "pyiron.Structure",
+          "tooltip": "the Structure object"
+        }
+      }
+    },
+    "List Potentials": {
+      "type": "List Potentials",
+      "category": "function",
+      "title": "List interatomic potentials",
+      "tooltip": "List interatomic potentials from NIST database",
+      "externalImports": "from pyiron_atomistics import Project, ase_to_pyiron",
+      "sourceCode": "{{indent}}def list_potential(project, structure):\n    job_test = Project(project).create.job.Lammps(\"lmp_test\")\n    job_test.structure = ase_to_pyiron(structure)\n    return job_test.list_potentials()\n{{indent}}{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(list_potential, delayed=True, project={{{inputs.1}}}, structure={{{inputs.2}}})\n{{{outputs.0}}}",
+      "inputs": { 
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "exec in",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "project": {
+          "title": "Project",
+          "dataType": "string",
+          "tooltip": "the Project object"
         },
         "structure": {
           "title": "Structure",
@@ -135,20 +130,20 @@
           "showWidget": false,
           "showTitle": false
         },
-        "job": {
-          "title": "Job",
-          "dataType": "pyiron.Job",
-          "tooltip": "the pyiron job object"
+        "PotentialList": {
+          "title": "PotentialList",
+          "dataType": "pyiron.PotentialList",
+          "tooltip": "List of interatomic potentials"
         }
       }
     },
-    "Get Energy": {
-      "type": "Get Energy",
+    "Optimize Structure": {
+      "type": "Optimize Structure",
       "category": "function",
-      "title": "Get Energy",
-      "tooltip": "Get total energy from pyiron job object",
-      "externalImports": "from pyiron_atomistics import Project",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = {{{inputs.1}}}.output.energy_tot\n{{{outputs.0}}}",
+      "title": "Optimize ASE structure",
+      "tooltip": "Optimize ASE structure using LAMMPS",
+      "externalImports": "from pyiron_atomistics import Project, ase_to_pyiron, pyiron_to_ase",
+      "sourceCode": "{{indent}}def optimize_structure(project, structure, potential):\n    job_minimize = Project(project).create.job.Lammps(\"lmp_mini\")\n    job_minimize.structure = ase_to_pyiron(structure)\n    job_minimize.potential = potential\n    job_minimize.calc_minimize(pressure=0.0)\n    job_minimize.run()\n    return pyiron_to_ase(job_minimize.get_structure())\n{{indent}}{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(optimize_structure, delayed=True, project={{{inputs.1}}}, structure={{{inputs.2}}}, potential={{{inputs.3}}})\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -157,10 +152,20 @@
           "showWidget": false,
           "showTitle": false
         },
-        "job": {
-          "title": "Job",
-          "dataType": "pyiron.Job",
-          "tooltip": "the pyiron job object"
+        "project": {
+          "title": "Project",
+          "dataType": "string",
+          "tooltip": "the Project object"
+        },
+        "structure": {
+          "title": "Structure",
+          "dataType": "pyiron.Structure",
+          "tooltip": "the Structure object"
+        },
+        "potential": {
+          "title": "Potential",
+          "dataType": "string",
+          "tooltip": "the interatomic potential"
         }
       },
       "outputs": {
@@ -171,10 +176,107 @@
           "showWidget": false,
           "showTitle": false
         },
-        "energy": {
-          "title": "Energy",
-          "dataType": "numpy.ndarray",
-          "tooltip": "the total energy as numpy array"
+        "structure": {
+          "title": "Structure",
+          "dataType": "pyiron.Structure",
+          "tooltip": "the Structure object"
+        }
+      }
+    },
+    "Calculate Strain": {
+      "type": "Calculate Strain",
+      "category": "function",
+      "title": "Calculate Strain",
+      "tooltip": "Calculate strained ASE structure with LAMMPS",
+      "externalImports": "from pyiron_atomistics import Project, ase_to_pyiron",
+      "sourceCode": "{{indent}}def calculate_strain(i, project, structure, potential, strain_lst):\n    job_strain = Project(project).create.job.Lammps(\"lmp_\" + str(i))\n    structure_strain = structure.copy()\n    structure_strain.set_cell(structure.cell.array * strain_lst[i], scale_atoms=True)\n    job_strain.structure = ase_to_pyiron(structure_strain)\n    job_strain.potential = potential\n    job_strain.run()\n    return {\"volume\": job_strain.output.volume[-1], \"energy\": job_strain.output.energy_tot[-1]}\n{{indent}}{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(calculate_strain, delayed=True, project={{{inputs.1}}}, structure={{{inputs.2}}}, potential={{{inputs.3}}}, i={{{inputs.4}}}, strain_lst={{{inputs.5}}})\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "exec in",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "project": {    
+          "title": "Project",
+          "dataType": "string",
+          "tooltip": "the Project object"
+        },
+        "structure": {
+          "title": "Structure",
+          "dataType": "pyiron.Structure",
+          "tooltip": "the Structure object"
+        },
+        "potential": {
+          "title": "Potential",
+          "dataType": "string",
+          "tooltip": "the interatomic potential"
+        },
+        "index": {
+          "title": "index",
+          "dataType": "integer",
+          "tooltip": "index for strain list"
+        },
+        "StrainList": {
+          "title": "StrainList",
+          "dataType": "list",
+          "tooltip": "list of strains"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "exec out",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "DataPoint": {
+          "title": "DatPoint",
+          "dataType": "anyDataType",
+          "tooltip": "Energy Volume Pair"
+        }
+      }
+    },
+    "Plot": {
+      "type": "Plot",
+      "category": "function",
+      "title": "Plot",
+      "tooltip": "Plot Energy Volume Curve",
+      "externalImports": "import matplotlib.pyplot as plt\nfrom pyiron_atomistics import Project",
+      "sourceCode": "{{indent}}def plot_energy_volume_curve(job_lst):\n    volume_lst, energy_tot_lst = [], []\n    for job in job_lst:\n        volume_lst.append(job[\"volume\"])\n        energy_tot_lst.append(job[\"energy\"])\n    plt.plot(volume_lst, energy_tot_lst)\n    plt.xlabel(\"Volume\")\n    plt.ylabel(\"Energy\")\n{{indent}}{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(plot_energy_volume_curve, delayed=True, job_lst={{{inputs.2}}})\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "exec in",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "project": {
+          "title": "Project",
+          "dataType": "string",
+          "tooltip": "the Project object"
+        },
+        "list": {
+          "title": "list",
+          "dataType": "list",
+          "tooltip": "List of DataPoints"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "exec out",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "Plot": {
+          "title": "Plot",
+          "dataType": "pyiron.Plot",
+          "tooltip": "Plot of the energy volume curve"
         }
       }
     }
