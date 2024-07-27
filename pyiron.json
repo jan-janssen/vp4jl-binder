@@ -189,7 +189,7 @@
       "title": "Calculate Strain",
       "tooltip": "Calculate strained ASE structure with LAMMPS",
       "externalImports": "from pyiron_atomistics import Project, ase_to_pyiron",
-      "sourceCode": "{{indent}}def calculate_strain(i, project, structure, potential, strain_lst):\n    job_strain = Project(project).create.job.Lammps(\"lmp_\" + str(i))    structure_strain = structure.copy()\n    structure_strain.set_cell(structure.cell.array * strain_lst[i], scale_atoms=True)\n    job_strain.structure = ase_to_pyiron(structure_strain)\n    job_strain.potential = potential\n    job_strain.run()\n    return {\"volume\": job_strain.output.volume[-1], \"energy\": job_strain.output.energy_tot[-1]}\n{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(calculate_strain, delayed=True, project={{{inputs.1}}}, structure={{{inputs.2}}}, potential={{{inputs.3}}}, i={{{inputs.4}}}, strain_lst={{{inputs.4}}})\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}def calculate_strain(i, project, structure, potential, strain_lst):\n    job_strain = Project(project).create.job.Lammps(\"lmp_\" + str(i))\n    structure_strain = structure.copy()\n    structure_strain.set_cell(structure.cell.array * strain_lst[i], scale_atoms=True)\n    job_strain.structure = ase_to_pyiron(structure_strain)\n    job_strain.potential = potential\n    job_strain.run()\n    return {\"volume\": job_strain.output.volume[-1], \"energy\": job_strain.output.energy_tot[-1]}\n{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(calculate_strain, delayed=True, project={{{inputs.1}}}, structure={{{inputs.2}}}, potential={{{inputs.3}}}, i={{{inputs.4}}}, strain_lst={{{inputs.4}}})\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
