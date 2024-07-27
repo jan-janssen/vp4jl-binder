@@ -25,7 +25,7 @@
       "title": "New Project",
       "tooltip": "create a Project object",
       "externalImports": "from pyiron_atomistics import Project",
-      "sourceCode": "{{indent}}def create_project(project_name):\n    return Project(project_name).path\n{{{outputs.1}}} = create_project(project_name={{{inputs.1}}})\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}def create_project(project_name):\n    return Project(project_name).path\n{{indent}}{{{outputs.1}}} = create_project(project_name={{{inputs.1}}})\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -61,7 +61,7 @@
       "title": "New ASE structure",
       "tooltip": "create an ASE structure object",
       "externalImports": "from ase.build import bulk\nfrom pyiron_atomistics import Project",
-      "sourceCode": "{{indent}}def create_structure(element):\n    return bulk(element, cubic=True)\n{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(create_structure, delayed=True, element={{{inputs.2}}})\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}def create_structure(element):\n    return bulk(element, cubic=True)\n{{indent}}{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(create_structure, delayed=True, element={{{inputs.2}}})\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -102,7 +102,7 @@
       "title": "List interatomic potentials",
       "tooltip": "List interatomic potentials from NIST database",
       "externalImports": "from pyiron_atomistics import Project, ase_to_pyiron",
-      "sourceCode": "{{indent}}def list_potential(project, structure):\n    job_test = Project(project).create.job.Lammps(\"lmp_test\")\n    job_test.structure = ase_to_pyiron(structure)\n    return job_test.list_potentials()\n{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(list_potential, delayed=True, project={{{inputs.1}}}, structure={{{inputs.2}}})\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}def list_potential(project, structure):\n    job_test = Project(project).create.job.Lammps(\"lmp_test\")\n    job_test.structure = ase_to_pyiron(structure)\n    return job_test.list_potentials()\n{{indent}}{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(list_potential, delayed=True, project={{{inputs.1}}}, structure={{{inputs.2}}})\n{{{outputs.0}}}",
       "inputs": { 
         "execIn": {
           "title": "execIn",
@@ -143,7 +143,7 @@
       "title": "Optimize ASE structure",
       "tooltip": "Optimize ASE structure using LAMMPS",
       "externalImports": "from pyiron_atomistics import Project, ase_to_pyiron, pyiron_to_ase",
-      "sourceCode": "{{indent}}def optimize_structure(project, structure, potential):\n    job_minimize = Project(project).create.job.Lammps(\"lmp_mini\")\n    job_minimize.structure = ase_to_pyiron(structure)\n    job_minimize.potential = potential\n    job_minimize.calc_minimize(pressure=0.0)\n    job_minimize.run()\n    return pyiron_to_ase(job_minimize.get_structure())\n{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(optimize_structure, delayed=True, project={{{inputs.1}}}, structure={{{inputs.2}}}, potential={{{inputs.3}}})\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}def optimize_structure(project, structure, potential):\n    job_minimize = Project(project).create.job.Lammps(\"lmp_mini\")\n    job_minimize.structure = ase_to_pyiron(structure)\n    job_minimize.potential = potential\n    job_minimize.calc_minimize(pressure=0.0)\n    job_minimize.run()\n    return pyiron_to_ase(job_minimize.get_structure())\n{{indent}}{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(optimize_structure, delayed=True, project={{{inputs.1}}}, structure={{{inputs.2}}}, potential={{{inputs.3}}})\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -189,7 +189,7 @@
       "title": "Calculate Strain",
       "tooltip": "Calculate strained ASE structure with LAMMPS",
       "externalImports": "from pyiron_atomistics import Project, ase_to_pyiron",
-      "sourceCode": "{{indent}}def calculate_strain(i, project, structure, potential, strain_lst):\n    job_strain = Project(project).create.job.Lammps(\"lmp_\" + str(i))\n    structure_strain = structure.copy()\n    structure_strain.set_cell(structure.cell.array * strain_lst[i], scale_atoms=True)\n    job_strain.structure = ase_to_pyiron(structure_strain)\n    job_strain.potential = potential\n    job_strain.run()\n    return {\"volume\": job_strain.output.volume[-1], \"energy\": job_strain.output.energy_tot[-1]}\n{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(calculate_strain, delayed=True, project={{{inputs.1}}}, structure={{{inputs.2}}}, potential={{{inputs.3}}}, i={{{inputs.4}}}, strain_lst={{{inputs.4}}})\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}def calculate_strain(i, project, structure, potential, strain_lst):\n    job_strain = Project(project).create.job.Lammps(\"lmp_\" + str(i))\n    structure_strain = structure.copy()\n    structure_strain.set_cell(structure.cell.array * strain_lst[i], scale_atoms=True)\n    job_strain.structure = ase_to_pyiron(structure_strain)\n    job_strain.potential = potential\n    job_strain.run()\n    return {\"volume\": job_strain.output.volume[-1], \"energy\": job_strain.output.energy_tot[-1]}\n{{indent}}{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(calculate_strain, delayed=True, project={{{inputs.1}}}, structure={{{inputs.2}}}, potential={{{inputs.3}}}, i={{{inputs.4}}}, strain_lst={{{inputs.4}}})\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -245,7 +245,7 @@
       "title": "Plot",
       "tooltip": "Plot Energy Volume Curve",
       "externalImports": "import matplotlib.pyplot as plt\nfrom pyiron_atomistics import Project",
-      "sourceCode": "{{indent}}def plot_energy_volume_curve(job_lst):\n    volume_lst, energy_tot_lst = [], []\n    for job in job_lst:\n        volume_lst.append(job[\"volume\"])\n        energy_tot_lst.append(job[\"energy\"])\n    plt.plot(volume_lst, energy_tot_lst)\n    plt.xlabel(\"Volume\")\n    plt.ylabel(\"Energy\")\n{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(plot_energy_volume_curve, delayed=True, job_lst={{{inputs.2}}})\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}def plot_energy_volume_curve(job_lst):\n    volume_lst, energy_tot_lst = [], []\n    for job in job_lst:\n        volume_lst.append(job[\"volume\"])\n        energy_tot_lst.append(job[\"energy\"])\n    plt.plot(volume_lst, energy_tot_lst)\n    plt.xlabel(\"Volume\")\n    plt.ylabel(\"Energy\")\n{{indent}}{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(plot_energy_volume_curve, delayed=True, job_lst={{{inputs.2}}})\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
