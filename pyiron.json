@@ -56,7 +56,7 @@
       "title": "New ASE structure",
       "tooltip": "create an ASE structure object",
       "externalImports": "from ase.build import bulk\nfrom pyiron_atomistics import Project",
-      "sourceCode": "{{indent}}def create_structure(element):\n    return bulk(element, cubic=True)\n{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(create_structure, delayed=True, element={{{inputs.2}}})\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}def create_structure(element):\n    return bulk(element, cubic=True)\n{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(create_structure, delayed={{{inputs.3}}}, element={{{inputs.2}}})\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -74,6 +74,11 @@
           "title": "element",
           "dataType": "string",
           "tooltip": "name of the checmical element"
+        },
+        "delayed": {
+          "title": "delayed",
+          "dataType": "boolean",
+          "tooltip": "enable delayed execution"
         }
       },
       "outputs": {
@@ -97,7 +102,7 @@
       "title": "List interatomic Potentials",
       "tooltip": "List interatomic potentials from NIST database",
       "externalImports": "from pyiron_atomistics import Project, ase_to_pyiron",
-      "sourceCode": "{{indent}}def list_potential(project, structure):\n    job_test = Project(project).create.job.Lammps(\"lmp_test\")\n    job_test.structure = ase_to_pyiron(structure)\n    return job_test.list_potentials()\n{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(list_potential, delayed=True, project={{{inputs.1}}}, structure={{{inputs.2}}})\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}def list_potential(project, structure):\n    job_test = Project(project).create.job.Lammps(\"lmp_test\")\n    job_test.structure = ase_to_pyiron(structure)\n    return job_test.list_potentials()\n{{{outputs.1}}} = Project({{{inputs.1}}}).wrap_python_function(list_potential, delayed={{{inputs.3}}}, project={{{inputs.1}}}, structure={{{inputs.2}}})\n{{{outputs.0}}}",
       "inputs": { 
         "execIn": {
           "title": "execIn",
@@ -115,6 +120,11 @@
           "title": "Structure",
           "dataType": "pyiron.Structure",
           "tooltip": "the Structure object"
+        },
+        "delayed": {
+          "title": "delayed",
+          "dataType": "boolean",
+          "tooltip": "enable delayed execution"
         }
       },
       "outputs": {
