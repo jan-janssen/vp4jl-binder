@@ -260,8 +260,8 @@
           "tooltip": "the Project object"
         },
         "list": {
-          "title": "List",
-          "dataType": "List",
+          "title": "list",
+          "dataType": "list",
           "tooltip": "List of DataPoints"
         }
       },
